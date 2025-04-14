@@ -1,26 +1,26 @@
 @echo off
 echo.
 echo ===============================================
-echo ĐANG TIẾN HÀNH BUILD AUTO ZOTERO IMPORTER...
+echo DANG TIEN HANH BUILD AUTO ZOTERO IMPORTER...
 echo ===============================================
 echo.
 
-REM Đảm bảo file icon.ico có trong thư mục assets/
+REM Dam bao file icon.ico co trong thu muc assets/
 set ICON_PATH=assets\icon.ico
 
-REM Tên file chính
+REM Ten file chinh
 set SCRIPT_PATH=app\main.py
 
-REM Kiểm tra PyInstaller đã được cài chưa
+REM Kiem tra PyInstaller da duoc cai chua
 where pyinstaller >nul 2>&1
 IF ERRORLEVEL 1 (
-    echo [X] PyInstaller chưa được cài. Cài bằng:
+    echo [X] PyInstaller chua duoc cai. Cai bang:
     echo     pip install pyinstaller
     pause
     exit /b
 )
 
-REM Thực thi build
+REM Thuc thi build
 pyinstaller ^
     --noconfirm ^
     --onefile ^
@@ -30,8 +30,8 @@ pyinstaller ^
     %SCRIPT_PATH%
 
 echo.
-echo [✓] BUILD HOÀN TẤT!
-echo => File .exe nằm trong thư mục /dist/
+echo BUILD HOAN TAT!
+echo File .exe nam trong thu muc /dist/
 echo.
 
 pause
