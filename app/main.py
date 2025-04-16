@@ -128,7 +128,10 @@ def main_import(root_dir, zot, logger):
     logger.info("✅ Kết nối thành công.")
 
     all_attachments = zot.everything(zot.items(itemType='attachment'))
-    existing_paths = {item['data']['path'] for item in all_attachments if item['data'].get('linkMode') == 'linked_file'}
+    existing_items = {}
+    for item in all_attachments:
+        if item['data'].get('linkMode') == 'linked_file':
+            existing_items[item['data']['path']] = item['key']
 
     all_collections = zot.collections()
     collections_by_parent = {}
@@ -168,9 +171,6 @@ def main_import(root_dir, zot, logger):
             if filename.endswith(".pdf"):
                 pdf_path = os.path.abspath(os.path.join(dirpath, filename))
                 file_uri = "file:///" + pdf_path.replace("\\", "/")
-                if file_uri in existing_paths:
-                    logger.info(f"⚠️ Bỏ qua (đã có): {filename}")
-                    continue
                 item_data = {
                     'itemType': 'attachment',
                     'linkMode': 'linked_file',
@@ -179,12 +179,13 @@ def main_import(root_dir, zot, logger):
                     'collections': [parent_key]
                 }
                 try:
+                    # Luôn tạo mới item mà không kiểm tra trùng lặp
                     zot.create_items([item_data])
-                    logger.info(f"✅ Thêm: {filename}")
-                    existing_paths.add(file_uri)
+                    logger.info(f"✅ Thêm mới: {filename}")
                     time.sleep(0.5)
                 except Exception as e:
-                    logger.error(f"❌ Lỗi khi thêm {filename}: {e}")
+                    logger.error(f"❌ Lỗi khi xử lý {filename}: {e}")
+                    logger.info(f"🔍 Debug: Đang cố xử lý file với URI: {file_uri}")
 
 # ========== Khởi chạy GUI ==========
 if __name__ == "__main__":
